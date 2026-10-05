@@ -32,7 +32,7 @@ add a rating. Simple, fun, genuinely useful.
 | Layer | Choice |
 |---|---|
 | Framework | React Native + Expo (managed) |
-| Navigation | React Navigation v6 (Stack + Bottom Tabs) |
+| Navigation | Expo Router (file-based routing with Stack + Bottom Tabs) |
 | State | Zustand (swipe session, filter state) |
 | Local DB | Drizzle ORM + expo-sqlite (saved list) |
 | Animations | React Native Reanimated 3 |
@@ -162,7 +162,7 @@ dims the stack behind it, popup appears centered. Quick decision helper, not man
 - Dismiss: tap outside or X button
 
 ### 5b. Anime Detail — My List (full screen)
-Triggered by tapping a tile in My List. Pushed via React Navigation Stack — full screen,
+Triggered by tapping a tile in My List. Pushed via an Expo Router Stack — full screen,
 back arrow top left. Management mode: user already saved this, now rating/tracking it.
 - Back arrow navigation header
 - Tall hero image (covers ~35% of screen height)
@@ -179,7 +179,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 
 ### Phase 1 — Foundation
 - [x] Expo project init with TypeScript template
-- [ ] React Navigation: Bottom Tabs (Discover, My List) + Stack for sheets
+- [ ] Expo Router: Bottom Tabs (Discover, My List) + Stack for sheets
 - [x] NativeWind 
 - [ ] Theme setup (dark, purple/pink accent — anime aesthetic)
 - [ ] Drizzle + expo-sqlite: `saved_anime` table (anilist_id, title, image_url, score,
