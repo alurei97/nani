@@ -16,33 +16,33 @@ add a rating. Simple, fun, genuinely useful.
 
 ## Why this works for the portfolio
 
-| Signal | What it shows |
-|---|---|
-| Swipe cards with Reanimated gestures | The RN-specific skill that separates devs |
-| AniList GraphQL integration | Real API concerns, non-trivial query design, rate-limit awareness |
-| Onboarding/tutorial with scripted animation | Reanimated sequences, not just gestures |
-| Zustand + Drizzle (local list) | Modern RN state + type-safe SQLite |
-| Image-heavy UI (anime posters) | Completely different visually |
-| Genre/type/score filters | Non-trivial UI, shows product thinking |
+| Signal                                      | What it shows                                                     |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| Swipe cards with Reanimated gestures        | The RN-specific skill that separates devs                         |
+| AniList GraphQL integration                 | Real API concerns, non-trivial query design, rate-limit awareness |
+| Onboarding/tutorial with scripted animation | Reanimated sequences, not just gestures                           |
+| Zustand + Drizzle (local list)              | Modern RN state + type-safe SQLite                                |
+| Image-heavy UI (anime posters)              | Completely different visually                                     |
+| Genre/type/score filters                    | Non-trivial UI, shows product thinking                            |
 
 ---
 
 ## Tech Stack
 
-| Layer | Choice |
-|---|---|
-| Framework | React Native + Expo (managed) |
+| Layer      | Choice                                                    |
+| ---------- | --------------------------------------------------------- |
+| Framework  | React Native + Expo (managed)                             |
 | Navigation | Expo Router (file-based routing with Stack + Bottom Tabs) |
-| State | Zustand (swipe session, filter state) |
-| Local DB | Drizzle ORM + expo-sqlite (saved list) |
-| Animations | React Native Reanimated 3 |
-| Gestures | React Native Gesture Handler |
-| Font | Nunito (Google Fonts via @expo-google-fonts/nunito) |
-| Styling | NativeWind (Tailwind for RN) |
-| GraphQL | Apollo Client (for RN) or urql |
-| Images | expo-image (faster than RN Image, built-in cache) |
-| Testing | Jest + React Native Testing Library |
-| Build | Expo EAS Build (free tier → APK) |
+| State      | Zustand (swipe session, filter state)                     |
+| Local DB   | Drizzle ORM + expo-sqlite (saved list)                    |
+| Animations | React Native Reanimated 3                                 |
+| Gestures   | React Native Gesture Handler                              |
+| Font       | Nunito (Google Fonts via @expo-google-fonts/nunito)       |
+| Styling    | NativeWind (Tailwind for RN)                              |
+| GraphQL    | Apollo Client (for RN) or urql                            |
+| Images     | expo-image (faster than RN Image, built-in cache)         |
+| Testing    | Jest + React Native Testing Library                       |
+| Build      | Expo EAS Build (free tier → APK)                          |
 
 ---
 
@@ -53,29 +53,40 @@ Endpoint: `https://graphql.anilist.co` — all requests are POST.
 Rate limit: 90 req/min — no queue needed, very generous.
 
 **Single query for both modes (filtered and random — only variables differ):**
+
 ```graphql
 query ($page: Int, $genres: [String], $format: MediaFormat, $score: Int) {
   Page(page: $page, perPage: 25) {
     media(
       type: ANIME
-      genre_in: $genres           # omit for random mode
-      format: $format             # omit for random mode
-      averageScore_greater: $score  # omit for random mode
+      genre_in: $genres # omit for random mode
+      format: $format # omit for random mode
+      averageScore_greater: $score # omit for random mode
       isAdult: false
       sort: SCORE_DESC
     ) {
       id
-      title { romaji english }
-      coverImage { large }
-      averageScore    # 0–100 (not 0–10 like MyAnimeList)
+      title {
+        romaji
+        english
+      }
+      coverImage {
+        large
+      }
+      averageScore # 0–100 (not 0–10 like MyAnimeList)
       episodes
-      format          # TV, MOVIE, OVA, ONA
+      format # TV, MOVIE, OVA, ONA
       genres
       description(asHtml: false)
       status
-      trailer { id site }  # YouTube video ID
+      trailer {
+        id
+        site
+      } # YouTube video ID
     }
-    pageInfo { lastPage }
+    pageInfo {
+      lastPage
+    }
   }
 }
 ```
@@ -85,6 +96,7 @@ AniList has ~15,000 anime (~600 pages at 25/page). Pick `Math.floor(Math.random(
 First call returns `pageInfo.lastPage` — store it, use for subsequent random page picks.
 
 **Key fields (AniList GraphQL response):**
+
 - Genres are strings: `"Action"`, `"Fantasy"`, `"Romance"` etc. (not numeric IDs)
 - Score is 0–100: slider value × 10 → `averageScore_greater`
 - Format: `TV`, `MOVIE`, `OVA`, `ONA` (not `type`)
@@ -93,6 +105,7 @@ First call returns `pageInfo.lastPage` — store it, use for subsequent random p
 - Trailer: `trailer.id` + `trailer.site` → construct YouTube URL: `youtube.com/watch?v={id}`
 
 **Genres (strings, pass directly as variables):**
+
 ```
 Action, Adventure, Comedy, Drama, Fantasy, Horror,
 Romance, Sci-Fi, Slice of Life, Thriller, Mystery, Psychological
@@ -105,6 +118,7 @@ Romance, Sci-Fi, Slice of Life, Thriller, Mystery, Psychological
 ## Screens
 
 ### 1. Tutorial (first launch only)
+
 - Shown once, stored via AsyncStorage (`tutorial_seen`)
 - 3 animated steps, each auto-plays then waits:
   - Step 1: card auto-swipes RIGHT → green heart appears → "Swipe right to save"
@@ -116,14 +130,16 @@ Romance, Sci-Fi, Slice of Life, Thriller, Mystery, Psychological
   ```js
   const TUTORIAL_ANIME = {
     id: 5114,
-    title: 'Fullmetal Alchemist: Brotherhood',
-    coverImage: 'https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx5114-KJTQz9AIm6Wk.jpg',
+    title: "Fullmetal Alchemist: Brotherhood",
+    coverImage:
+      "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx5114-KJTQz9AIm6Wk.jpg",
     averageScore: 94,
-  }
+  };
   ```
   If image fails (no connection) → show purple placeholder colour. Tutorial still works.
 
 ### 2. Filter / Mood screen (tab: Discover)
+
 - When no swipe session is active, this is the default Discover state
 - Genre chips: scrollable row of toggleable pills (tap to select, multi-select)
 - Type selector: All / TV / Movie / OVA (segmented control)
@@ -132,6 +148,7 @@ Romance, Sci-Fi, Slice of Life, Thriller, Mystery, Psychological
 - "Skip filters" link for pure random
 
 ### 3. Swipe Stack (active session)
+
 - Single card display — no background cards peeking behind (cleaner, simpler to animate)
 - Card: full-height poster image, gradient overlay at bottom, title + score + format badge
 - Subtle drop shadow gives depth without needing background cards
@@ -144,14 +161,17 @@ Romance, Sci-Fi, Slice of Life, Thriller, Mystery, Psychological
 - "Out of cards" state → reload button
 
 ### 4. My List (tab: My List)
+
 - 2-column grid of saved anime posters
 - Status badge on each: Plan to Watch / Watching / Completed
 - Tap → Detail sheet with status/rating controls
 - Empty state: illustration + "Swipe right on something you like"
 
 ### 5a. Anime Detail — Swipe preview (centered popup)
+
 Triggered by tapping a card in the swipe stack. Still in the discovery flow — overlay
 dims the stack behind it, popup appears centered. Quick decision helper, not management.
+
 - Semi-transparent dark overlay (swipe stack still faintly visible behind)
 - Centered card ~88% screen width, rounded corners
 - Compact image header (shorter than full screen)
@@ -162,8 +182,10 @@ dims the stack behind it, popup appears centered. Quick decision helper, not man
 - Dismiss: tap outside or X button
 
 ### 5b. Anime Detail — My List (full screen)
+
 Triggered by tapping a tile in My List. Pushed via an Expo Router Stack — full screen,
 back arrow top left. Management mode: user already saved this, now rating/tracking it.
+
 - Back arrow navigation header
 - Tall hero image (covers ~35% of screen height)
 - Title, score, episodes, format, genre chips
@@ -178,9 +200,10 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 ## Technical Backlog
 
 ### Phase 1 — Foundation
+
 - [x] Expo project init with TypeScript template
 - [ ] Expo Router: Bottom Tabs (Discover, My List) + Stack for sheets
-- [x] NativeWind 
+- [x] NativeWind
 - [ ] Theme setup (dark, purple/pink accent — anime aesthetic)
 - [ ] Drizzle + expo-sqlite: `saved_anime` table (anilist_id, title, image_url, score,
       episodes, format, synopsis, genres, status, rating, saved_at)
@@ -188,6 +211,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - [ ] AniList GraphQL client (Apollo Client or urql): query wrapper, error handling, genre fetch + cache
 
 ### Phase 2 — Tutorial
+
 - [ ] AsyncStorage check on app start → show tutorial if not seen
 - [ ] Tutorial screen: 3 steps with scripted Reanimated card animation
   - [ ] Hardcoded TUTORIAL_ANIME constant (no network request)
@@ -199,6 +223,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - [ ] Skip + Got it buttons → set `tutorial_seen` → navigate to Discover
 
 ### Phase 3 — Filter + Swipe
+
 - [ ] Filter screen: genre chips, type segmented control, score slider
 - [ ] AniList query on button press: filtered or unfiltered Page query with random page number
 - [ ] Swipe card component:
@@ -213,6 +238,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - [ ] Pre-fetch next batch when pool < 5
 
 ### Phase 4 — My List + Detail
+
 - [ ] My List grid: FlatList 2 columns, expo-image for posters, status badge
 - [ ] Bottom sheet (react-native-bottom-sheet library): anime detail
 - [ ] Status picker + star rating → update Drizzle row
@@ -220,6 +246,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - [ ] Empty state
 
 ### Phase 5 — Polish + Portfolio
+
 - [ ] Haptic feedback on swipe confirm (expo-haptics)
 - [ ] Skeleton loaders while cards fetch
 - [ ] Error state (API down, no results for filters)
@@ -233,14 +260,17 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 ## 🧪 Tests
 
 **Phase 1:**
+
 - [ ] Zustand store: setFilters, addToPool, advanceCard actions
 - [ ] Drizzle: saveAnime, updateStatus, removeAnime
 
 **Phase 3:**
+
 - [ ] Threshold logic util: `getSwiperResult(translateX)` → 'save' | 'skip' | null
 - [ ] AniList client: handles rate limit (90 req/min), retries on 429
 
 **Phase 5:**
+
 - [ ] FilterScreen: genre chip toggles correctly, slider updates score
 - [ ] MyListGrid: renders correct item count, tapping opens detail
 
@@ -278,6 +308,7 @@ variables = {
 ```
 
 **Deduplication flow (local, instant):**
+
 1. Fetch 25 results from AniList
 2. Filter out ids already in AsyncStorage seen list
 3. Filter out ids already saved in Drizzle (My List)
@@ -288,12 +319,13 @@ variables = {
 **Seen list — AsyncStorage (not Drizzle):**
 Just a JSON array of numbers. Simple, fast, persists across sessions.
 Cap: keep last 500 seen IDs. After 500, shift oldest off the array.
+
 ```js
-const seen = await AsyncStorage.getItem('seen_ids');
-const seenSet = new Set(JSON.parse(seen ?? '[]'));
-const fresh = results.filter(a => !seenSet.has(a.id) && !savedIds.has(a.id));
-const updated = [...seenSet, ...fresh.map(a => a.id)].slice(-500);
-await AsyncStorage.setItem('seen_ids', JSON.stringify(updated));
+const seen = await AsyncStorage.getItem("seen_ids");
+const seenSet = new Set(JSON.parse(seen ?? "[]"));
+const fresh = results.filter((a) => !seenSet.has(a.id) && !savedIds.has(a.id));
+const updated = [...seenSet, ...fresh.map((a) => a.id)].slice(-500);
+await AsyncStorage.setItem("seen_ids", JSON.stringify(updated));
 ```
 
 **No progress counter, no "X left" indicator** — just a shimmer when the pool is loading.
@@ -332,13 +364,13 @@ class AniListClient {
 
 ## What to say in interviews
 
-*"Nani? is a React Native anime randomizer I built to learn the RN ecosystem properly.
+_"Nani? is a React Native anime randomizer I built to learn the RN ecosystem properly.
 The main technical challenge was the swipe card stack — I built it with Reanimated 3
 and Gesture Handler, which gave me a real feel for how RN handles animations differently
 from Flutter. I also built a scripted onboarding tutorial that demonstrates the swipe
 gestures using Reanimated sequences before the user touches anything.
 The data comes from the Jikan API (MyAnimeList) with a small rate-limit queue
-to stay within their 3 req/sec limit. It's on GitHub and published as an APK."*
+to stay within their 3 req/sec limit. It's on GitHub and published as an APK."_
 
 ---
 
@@ -354,10 +386,10 @@ Week 3  → Phase 4 + 5 (list, detail, polish, publish)
 
 ## Status colour system
 
-| Status | Colour | Hex |
-|---|---|---|
-| Plan to Watch | Gray | `#888888` |
-| Watching | Amber | `#fbbf24` |
-| Completed | Green | `#4ade80` |
+| Status        | Colour | Hex       |
+| ------------- | ------ | --------- |
+| Plan to Watch | Gray   | `#888888` |
+| Watching      | Amber  | `#fbbf24` |
+| Completed     | Green  | `#4ade80` |
 
 Rationale: purple is the app's primary accent — reserving it for interactive UI elements only (active tab, selected chips, buttons). Status colours are purely semantic and follow a natural progression: neutral → active → done.
