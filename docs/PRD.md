@@ -178,9 +178,9 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 ## Technical Backlog
 
 ### Phase 1 — Foundation
-- [ ] Expo project init with TypeScript template
+- [x] Expo project init with TypeScript template
 - [ ] React Navigation: Bottom Tabs (Discover, My List) + Stack for sheets
-- [ ] NativeWind 
+- [x] NativeWind 
 - [ ] Theme setup (dark, purple/pink accent — anime aesthetic)
 - [ ] Drizzle + expo-sqlite: `saved_anime` table (anilist_id, title, image_url, score,
       episodes, format, synopsis, genres, status, rating, saved_at)
