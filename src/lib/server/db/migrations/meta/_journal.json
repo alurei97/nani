@@ -1,0 +1,13 @@
+{
+  "version": "7",
+  "dialect": "sqlite",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "6",
+      "when": 1791284795020,
+      "tag": "0000_create-saved-anime",
+      "breakpoints": true
+    }
+  ]
+}

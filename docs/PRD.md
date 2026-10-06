@@ -205,7 +205,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - [x] Expo Router: Bottom Tabs (Discover, My List) + Stack for sheets
 - [x] NativeWind
 - [x] Theme setup (dark, purple/pink accent — anime aesthetic)
-- [ ] Drizzle + expo-sqlite: `saved_anime` table (anilist_id, title, image_url, score,
+- [x] Drizzle + expo-sqlite: `saved_anime` table (id, title, image_url, score,
       episodes, format, synopsis, genres, status, rating, saved_at)
 - [ ] Zustand: filter state + swipe session (current card pool, index, fetching)
 - [ ] AniList GraphQL client (Apollo Client or urql): query wrapper, error handling, genre fetch + cache
@@ -250,6 +250,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - [ ] Haptic feedback on swipe confirm (expo-haptics)
 - [ ] Skeleton loaders while cards fetch
 - [ ] Error state (API down, no results for filters)
+- [ ] Discover background: subtle, stable placement of low-contrast アニメ Katakana accents that never obscure content
 - [ ] App icon + splash (anime-themed)
 - [ ] EAS Build → APK
 - [ ] README with screen recordings / GIFs (the swipe animation must be in the README)
