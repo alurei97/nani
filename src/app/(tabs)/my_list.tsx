@@ -4,7 +4,7 @@ import { StyleSheet, Text } from "react-native";
 export default function Index() {
   return (
     <CustomScreen style={styles.container}>
-      <Text className="text-5xl">MY LIST</Text>
+      <Text className="text-status-completed text-5xl">MY LIST</Text>
     </CustomScreen>
   );
 }

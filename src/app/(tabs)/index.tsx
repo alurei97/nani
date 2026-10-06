@@ -5,7 +5,7 @@ import { StyleSheet, Text } from "react-native";
 export default function Index() {
   return (
     <CustomScreen style={styles.container}>
-      <Text className="text-red-500 text-5xl">DISCOVER SCREEN</Text>
+      <Text className="text-accent text-5xl">DISCOVER SCREEN</Text>
 
       <Link href={"./my_list/"} className="text-blue-300 text-3xl">
         Go to My list

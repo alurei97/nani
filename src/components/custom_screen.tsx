@@ -7,7 +7,10 @@ type CustomScreenProps = {
   style?: StyleProp<ViewStyle>;
 };
 
-export default function 
-({ children, style }: CustomScreenProps) {
-  return <SafeAreaView style={[style, { flex: 1 }]}>{children}</SafeAreaView>;
+export default function ({ children, style }: CustomScreenProps) {
+  return (
+    <SafeAreaView className="flex-1 bg-app" style={style}>
+      {children}
+    </SafeAreaView>
+  );
 }

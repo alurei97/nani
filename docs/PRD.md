@@ -202,9 +202,9 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 ### Phase 1 — Foundation
 
 - [x] Expo project init with TypeScript template
-- [ ] Expo Router: Bottom Tabs (Discover, My List) + Stack for sheets
+- [x] Expo Router: Bottom Tabs (Discover, My List) + Stack for sheets
 - [x] NativeWind
-- [ ] Theme setup (dark, purple/pink accent — anime aesthetic)
+- [x] Theme setup (dark, purple/pink accent — anime aesthetic)
 - [ ] Drizzle + expo-sqlite: `saved_anime` table (anilist_id, title, image_url, score,
       episodes, format, synopsis, genres, status, rating, saved_at)
 - [ ] Zustand: filter state + swipe session (current card pool, index, fetching)
