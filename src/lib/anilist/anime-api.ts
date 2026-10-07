@@ -1,7 +1,24 @@
 
 import { Anime } from "@/types/anime";
-import { getAnimes, GraphQLError, Variables } from "./client";
-import { AnilistAnime } from "./types";
+import { CombinedError } from "urql";
+import {  client } from "./client";
+import { AnilistAnime, AnilistFormat, Genre } from "./types";
+
+export type Variables = {
+  page: number;
+  genres?: Genre[];
+  format?: AnilistFormat;
+  score?: number;
+};
+
+export type AnimeSearchData = {
+  Page: {
+    media: AnilistAnime[];
+    pageInfo: {
+      lastPage: number;
+    };
+  };
+};
 
 function toAnime(anilistAnime: AnilistAnime): Anime {
     return {
@@ -12,14 +29,14 @@ function toAnime(anilistAnime: AnilistAnime): Anime {
     };
 }
 
-export async function fetchAnimes(variables: Variables): Promise<{ animes: Anime[]; errors?: GraphQLError[] }> {
+export async function fetchAnimes(variables: Variables): Promise<{ animes: Anime[]; lastPage: number, error?: CombinedError }> {
     //TODO: delete
-    variables = {
-        page: 1,
-        genres: ["Fantasy"],
-        format: "TV",
-        score: 70,
-    };
+    // variables = {
+    //     page: 1,
+    //     genres: ["Fantasy"],
+    //     format: "TV",
+    //     score: 70,
+    // };
 
     const animeQuery = `
         query ($page: Int, $genres: [String], $format: MediaFormat, $score: Int) {
@@ -40,9 +57,10 @@ export async function fetchAnimes(variables: Variables): Promise<{ animes: Anime
         }
     `;
 
-    const result = await getAnimes(animeQuery, variables);
+    const result = await client.query<AnimeSearchData>(animeQuery, variables).toPromise();
     const animes = result.data?.Page.media.map(toAnime) ?? [];
-    const errors = result.errors;
+    const lastPage = result.data?.Page.pageInfo.lastPage ?? 0;
+    const error = result.error;
 
-    return { animes, errors };
+    return { animes, lastPage, error };
 }

@@ -63,7 +63,6 @@ query ($page: Int, $genres: [String], $format: MediaFormat, $score: Int) {
       format: $format # omit for random mode
       averageScore_greater: $score # omit for random mode
       isAdult: false
-      sort: SCORE_DESC
     ) {
       id
       title {
@@ -93,7 +92,7 @@ query ($page: Int, $genres: [String], $format: MediaFormat, $score: Int) {
 
 **Random strategy:** no native random endpoint — use random page number instead.
 AniList has ~15,000 anime (~600 pages at 25/page). Pick `Math.floor(Math.random() * lastPage) + 1`.
-First call returns `pageInfo.lastPage` — store it, use for subsequent random page picks.
+First call returns `pageInfo.lastPage` — store it, use for subsequent random page picks. Do not request a score sort; locally shuffle each fetched batch before adding it to the swipe pool so results are not presented in AniList's default order.
 
 **Key fields (AniList GraphQL response):**
 
@@ -209,7 +208,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - [x] Drizzle + expo-sqlite: `saved_anime` table (id, title, image_url, score,
       episodes, format, synopsis, genres, status, rating, saved_at)
 - [x] Zustand: filter state + swipe session (current card pool, index, fetching)
-- [ ] AniList GraphQL client (urql): shared client and Provider, typed query wrapper, and error handling. Genre options are a local constant; no genre fetch or cache.
+- [x] AniList GraphQL client (urql): shared client, typed query wrapper, and error handling. Use imperative queries for button-triggered fetches; no Provider is needed unless UI components use urql hooks. Genre options are a local constant; no genre fetch or cache.
 
 ### Phase 2 — Tutorial
 
@@ -226,7 +225,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 ### Phase 3 — Filter + Swipe
 
 - [ ] Filter screen: genre chips, type segmented control, score slider
-- [ ] AniList query on button press: filtered or unfiltered Page query with random page number
+- [ ] AniList query on button press: filtered or unfiltered Page query with random page number; locally shuffle each fetched batch before adding it to the pool
 - [ ] Swipe card component:
   - [ ] `useAnimatedStyle` for translateX, rotate, card opacity
   - [ ] `Gesture.Pan` from Gesture Handler
