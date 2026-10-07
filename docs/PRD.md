@@ -39,7 +39,7 @@ add a rating. Simple, fun, genuinely useful.
 | Gestures   | React Native Gesture Handler                              |
 | Font       | Nunito (Google Fonts via @expo-google-fonts/nunito)       |
 | Styling    | NativeWind (Tailwind for RN)                              |
-| GraphQL    | Apollo Client (for RN) or urql                            |
+| GraphQL    | urql                                                      |
 | Images     | expo-image (faster than RN Image, built-in cache)         |
 | Testing    | Jest + React Native Testing Library                       |
 | Build      | Expo EAS Build (free tier → APK)                          |
@@ -107,11 +107,12 @@ First call returns `pageInfo.lastPage` — store it, use for subsequent random p
 **Genres (strings, pass directly as variables):**
 
 ```
-Action, Adventure, Comedy, Drama, Fantasy, Horror,
-Romance, Sci-Fi, Slice of Life, Thriller, Mystery, Psychological
+Action, Adventure, Comedy, Drama, Ecchi, Fantasy, Hentai, Horror,
+Mahou Shoujo, Mecha, Music, Mystery, Psychological, Romance, Sci-Fi,
+Slice of Life, Sports, Supernatural, Thriller
 ```
 
-**Genre cache:** call once with `query { GenreCollection }`, store in AsyncStorage forever.
+These 19 values are the AniList `GenreCollection` returned on 2026-10-07 and are stored as a local constant. No runtime genre query or AsyncStorage cache is needed; update the constant manually if AniList changes its genre collection.
 
 ---
 
@@ -207,8 +208,8 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - [x] Theme setup (dark, purple/pink accent — anime aesthetic)
 - [x] Drizzle + expo-sqlite: `saved_anime` table (id, title, image_url, score,
       episodes, format, synopsis, genres, status, rating, saved_at)
-- [ ] Zustand: filter state + swipe session (current card pool, index, fetching)
-- [ ] AniList GraphQL client (Apollo Client or urql): query wrapper, error handling, genre fetch + cache
+- [x] Zustand: filter state + swipe session (current card pool, index, fetching)
+- [ ] AniList GraphQL client (urql): shared client and Provider, typed query wrapper, and error handling. Genre options are a local constant; no genre fetch or cache.
 
 ### Phase 2 — Tutorial
 

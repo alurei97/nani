@@ -1,4 +1,23 @@
-export type Genre = "Action" | "Adventure" | "Comedy" | "Drama" | "Fantasy" | "Horror" | "Romance" | "Sci-Fi" | "Slice of Life" | "Thriller" | "Mystery" | "Psychological";
+export type Genre =
+    "Action" |
+    "Adventure" |
+    "Comedy" |
+    "Drama" |
+    "Ecchi" |
+    "Fantasy" |
+    "Hentai" |
+    "Horror" |
+    "Mahou Shoujo" |
+    "Mecha" |
+    "Music" |
+    "Mystery" |
+    "Psychological" |
+    "Romance" |
+    "Sci-Fi" |
+    "Slice of Life" |
+    "Sports" |
+    "Supernatural" |
+    "Thriller";
 
 export type AnilistFormat = "TV" | "MOVIE" | "OVA";
 export type FormatSelection = "ALL" | AnilistFormat;
