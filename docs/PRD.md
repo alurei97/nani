@@ -212,7 +212,7 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 
 ### Phase 2 — Tutorial
 
-- [ ] AsyncStorage check on app start → show tutorial if not seen
+- [x] AsyncStorage check on app start → show tutorial if not seen
 - [ ] Tutorial screen: 3 steps with scripted Reanimated card animation
   - [ ] Hardcoded TUTORIAL_ANIME constant (no network request)
   - [ ] `useSharedValue` for card X position and rotation
