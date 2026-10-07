@@ -1,15 +1,13 @@
+import { FormatSelection, Genre } from "@/lib/anilist/types";
 import { create } from "zustand";
-
-type Genre = "Action" | "Adventure" | "Comedy" | "Drama" | "Fantasy" | "Horror" | "Romance" | "Sci-Fi" | "Slice of Life" | "Thriller" | "Mystery" | "Psychological";
-type Format = "ALL" | "TV" | "MOVIE" | "OVA";
 
 type FilterStore = {
     selectedGenres: Genre[];
-    selectedFormat: Format;
+    selectedFormat: FormatSelection;
     selectedMinScore: number;
     setSelectedGenres: (genres: Genre[]) => void;
     toggleGenre: (genre: Genre) => void;
-    setSelectedFormat: (format: Format) => void;
+    setSelectedFormat: (format: FormatSelection) => void;
     setSelectedMinScore: (score: number) => void;
 };
 
@@ -31,7 +29,7 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
         return set({ selectedGenres: updatedGenres });
     },
 
-    setSelectedFormat: (format: Format) => set({ selectedFormat: format }),
+    setSelectedFormat: (format: FormatSelection) => set({ selectedFormat: format }),
 
     setSelectedMinScore: (score: number) => {
         const finalScore = Math.max(0, Math.min(10, score));

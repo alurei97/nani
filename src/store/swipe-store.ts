@@ -1,11 +1,5 @@
+import { Anime } from "@/types/anime";
 import { create } from "zustand";
-
-type Anime = {
-    id: number;
-    title: string;
-    coverImage: string;
-    averageScore: number;
-};
 
 type SwipeStore = {
     isFetching: boolean;
