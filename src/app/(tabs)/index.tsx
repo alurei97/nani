@@ -9,7 +9,7 @@ export default function Index() {
       <CenteredContent>
         <Text className="text-accent text-5xl">DISCOVER SCREEN</Text>
 
-        <Link href={"./my_list/"} className="text-blue-300 text-3xl">
+        <Link href={"./my-list/"} className="text-blue-300 text-3xl">
           Go to My list
         </Link>
       </CenteredContent>

@@ -1,8 +1,8 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
-export const saveTutorialSeen = async (value: boolean) => {
+export const saveTutorialSeen = async () => {
     try {
-        await AsyncStorage.setItem('tutorial_seen', value.toString());
+        await AsyncStorage.setItem('tutorial_seen', 'true');
     } catch (e) {
         console.error('Error saving to local storage', e);
     }
@@ -14,6 +14,14 @@ export const getTutorialSeen = async (): Promise<boolean | null> => {
         return value === 'true';
     } catch (e) {
         console.error('Error reading from local storage', e);
-        return null;
+        return false;
+    }
+};
+
+export const deleteAll = async () => {
+    try {
+        await AsyncStorage.clear();
+    } catch (e) {
+        console.error('Error deleting all from local storage', e);
     }
 };

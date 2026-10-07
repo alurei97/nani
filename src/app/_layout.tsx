@@ -1,16 +1,29 @@
 import CenteredContent from "@/components/centered-content";
 import CustomScreen from "@/components/custom-screen";
+import { getTutorialSeen } from "@/lib/local_storage/local-storage";
 import { db } from "@/lib/server/db/client";
 import migrations from "@/lib/server/db/migrations/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
 import { Stack } from "expo-router";
 import { StatusBar } from "expo-status-bar";
-import { Text } from "react-native";
-
+import { useEffect, useState } from "react";
+import { ActivityIndicator, Text } from "react-native";
 import "../../global.css";
 
 export default function RootLayout() {
   const { success, error } = useMigrations(db, migrations);
+
+  const [tutorialSeen, setTutorialSeen] = useState<boolean | null>(null);
+
+  useEffect(() => {
+    const loadTutorialSeen = async () => {
+      const result = await getTutorialSeen();
+      setTutorialSeen(result);
+      console.log(">>> Tutorial seen:", result);
+    };
+
+    void loadTutorialSeen();
+  }, []);
 
   if (error) {
     return (
@@ -27,6 +40,24 @@ export default function RootLayout() {
       <CustomScreen>
         <CenteredContent>
           <Text className="text-accent text-5xl">Preparing database...</Text>
+        </CenteredContent>
+      </CustomScreen>
+    );
+  }
+
+  if (tutorialSeen === null) {
+    return (
+      <CenteredContent>
+        <ActivityIndicator size="large" color="#a855f7" />
+      </CenteredContent>
+    );
+  }
+
+  if (tutorialSeen === false) {
+    return (
+      <CustomScreen>
+        <CenteredContent>
+          <Text className="text-accent text-5xl">Tutorial placeholder</Text>
         </CenteredContent>
       </CustomScreen>
     );
