@@ -1,5 +1,5 @@
 import CenteredContent from "@/components/centered-content";
-import CustomScreen from "@/components/custom_screen";
+import CustomScreen from "@/components/custom-screen";
 import { Link } from "expo-router";
 import { Text } from "react-native";
 

@@ -1,5 +1,5 @@
 import CenteredContent from "@/components/centered-content";
-import CustomScreen from "@/components/custom_screen";
+import CustomScreen from "@/components/custom-screen";
 import { db } from "@/lib/server/db/client";
 import migrations from "@/lib/server/db/migrations/migrations";
 import { useMigrations } from "drizzle-orm/expo-sqlite/migrator";
