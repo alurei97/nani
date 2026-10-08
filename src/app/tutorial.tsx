@@ -5,7 +5,7 @@ import colors from "@/constants/colors.json";
 import { FontAwesome } from "@react-native-vector-icons/fontawesome";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { View } from "react-native";
+import { Pressable, View } from "react-native";
 
 const TUTORIAL_ANIME = {
   title: "Fullmetal Alchemist: Brotherhood",
@@ -15,18 +15,19 @@ const TUTORIAL_ANIME = {
 };
 
 function SkipText() {
+  const router = useRouter();
+
   return (
-    //TODO: ontap
-    <AppText
+    <Pressable
+      onPress={() => router.back()}
       style={{
         position: "absolute",
         top: 0,
         right: 0,
-        color: colors.body,
       }}
     >
-      Skip
-    </AppText>
+      <AppText style={{ color: colors.body }}>Skip</AppText>
+    </Pressable>
   );
 }
 
