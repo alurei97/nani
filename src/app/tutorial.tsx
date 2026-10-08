@@ -208,7 +208,18 @@ function Steps({ step }: { step: number }) {
   );
 }
 
-function NextButton({ onPress }: { onPress: () => void }) {
+function NextButton({ step, onPress }: { step: number; onPress: () => void }) {
+  function getText(step: number) {
+    switch (step) {
+      case maxSteps:
+        return "Got it!" as const;
+      default:
+        return "Next" as const;
+    }
+  }
+
+  const text = getText(step);
+
   return (
     <Pressable
       onPress={() => {
@@ -230,9 +241,11 @@ function NextButton({ onPress }: { onPress: () => void }) {
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
         <AppText weight="bold" className="text-accent text-xl">
-          Next
+          {text}
         </AppText>
-        <FontAwesome name="chevron-right" color={colors.accent} size={14} />
+        {step !== maxSteps && (
+          <FontAwesome name="chevron-right" color={colors.accent} size={14} />
+        )}
       </View>
     </Pressable>
   );
@@ -253,6 +266,7 @@ export default function Tutorial() {
         <Explanation step={step} />
         <Steps step={step} />
         <NextButton
+          step={step}
           onPress={() => {
             if (step === maxSteps) router.back();
             setStep(step + 1);

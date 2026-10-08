@@ -215,13 +215,13 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 
 - [x] AsyncStorage check on app start → show tutorial if not seen
 - [ ] Tutorial screen: 3 steps with scripted Reanimated card animation
-  - [ ] Hardcoded TUTORIAL_ANIME constant (no network request)
+  - [x] Hardcoded TUTORIAL_ANIME constant (no network request)
   - [ ] `useSharedValue` for card X position and rotation
   - [ ] `withTiming` sequence: slide right → pause → snap back → slide left → pause → snap back
   - [ ] Interpolated opacity for heart/X icons as card moves
   - [ ] Purple placeholder shown if cover image fails to load
-- [ ] Step indicator dots
-- [ ] Skip + Got it buttons → set `tutorial_seen` → navigate to Discover
+- [x] Step indicator dots
+- [x] Skip + Got it buttons → set `tutorial_seen` → navigate to Discover
 
 ### Phase 3 — Filter + Swipe
 
