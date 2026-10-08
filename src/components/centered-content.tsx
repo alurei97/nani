@@ -1,10 +1,17 @@
 import { ReactNode } from "react";
-import { View } from "react-native";
+import { View , ViewProps } from "react-native";
 
-type CenteredContentProps = {
+type CenteredContentProps = ViewProps & {
   children: ReactNode;
 };
 
-export default function CenteredContent({ children }: CenteredContentProps) {
-  return <View className="flex-1 items-center justify-center">{children}</View>;
+export default function CenteredContent({
+  children,
+  ...props
+}: CenteredContentProps) {
+  return (
+    <View className="flex-1 items-center justify-center" {...props}>
+      {children}
+    </View>
+  );
 }

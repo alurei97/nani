@@ -2,7 +2,7 @@ import { NativeTabs } from "expo-router/build/native-tabs";
 
 export default function TabLayout() {
   return (
-    <NativeTabs>
+    <NativeTabs labelStyle={{ fontFamily: "Nunito_400Regular" }}>
       <NativeTabs.Trigger name="index">
         <NativeTabs.Trigger.Label>Discover</NativeTabs.Trigger.Label>
         <NativeTabs.Trigger.Icon sf="house.fill" md="home" />

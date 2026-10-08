@@ -1,12 +1,12 @@
+import { AppText } from "@/components/app-text";
 import CenteredContent from "@/components/centered-content";
 import CustomScreen from "@/components/custom-screen";
-import { Text } from "react-native";
 
 export default function Index() {
   return (
     <CustomScreen>
       <CenteredContent>
-        <Text className="text-status-completed text-5xl">MY LIST</Text>
+        <AppText className="text-status-completed text-5xl">MY LIST</AppText>
       </CenteredContent>
     </CustomScreen>
   );
