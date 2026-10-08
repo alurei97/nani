@@ -22,6 +22,7 @@ void SplashScreen.preventAutoHideAsync();
 
 export default function RootLayout() {
   const { success, error } = useMigrations(db, migrations);
+
   const [fontsLoaded, fontError] = useFonts({
     Nunito_400Regular,
     Nunito_800ExtraBold,

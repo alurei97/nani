@@ -120,10 +120,11 @@ These 19 values are the AniList `GenreCollection` returned on 2026-10-07 and are
 ### 1. Tutorial (first launch only)
 
 - Shown once, stored via AsyncStorage (`tutorial_seen`)
-- 3 animated steps, each auto-plays then waits:
+- 4 animated steps, each auto-plays then waits:
   - Step 1: card auto-swipes RIGHT → green heart appears → "Swipe right to save"
   - Step 2: card auto-swipes LEFT → red X appears → "Swipe left to skip"
-  - Step 3: static My List preview → "Find it in your list later"
+  - Step 3: card is tapped → detail view appears → "Tap to see anime info"
+  - Step 4: static My List preview → "Find it in your list later"
 - Skip button top right
 - "Got it" CTA on step 3
 - Tutorial card is **hardcoded** — no network request on onboarding:

@@ -5,7 +5,11 @@ import colors from "@/constants/colors.json";
 import { FontAwesome } from "@react-native-vector-icons/fontawesome";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { useRouter } from "expo-router";
+import { useState } from "react";
 import { Pressable, View } from "react-native";
+
+const maxSteps = 4;
 
 const TUTORIAL_ANIME = {
   title: "Fullmetal Alchemist: Brotherhood",
@@ -35,9 +39,7 @@ function Title() {
   return (
     <AppText
       className=" text-2xl"
-      style={{
-        color: "rgba(255, 255, 255, 0.8)",
-      }}
+      style={{ color: "rgba(255, 255, 255, 0.8)" }}
     >
       How it works
     </AppText>
@@ -93,27 +95,69 @@ function AnimeTutorialCard() {
   );
 }
 
-function ExplanationTitle() {
-  //TODO: depending on step
+function ExplanationTitle({ step }: { step: number }) {
+  function getTextIcon(step: number) {
+    switch (step) {
+      case 1:
+        return "arrow-right" as const;
+      case 2:
+        return "arrow-left" as const;
+      case 3:
+        return "hand-pointer-o" as const;
+      default:
+        return "th-large" as const;
+    }
+  }
+
+  function getText(step: number) {
+    switch (step) {
+      case 1:
+        return "Swipe right to save" as const;
+      case 2:
+        return "Swipe left to discard" as const;
+      case 3:
+        return "Tap to see anime info" as const;
+      default:
+        return "Find it in My List" as const;
+    }
+  }
+
+  const icon = getTextIcon(step);
+  const text = getText(step);
+
   return (
     <View
       style={{
         flexDirection: "row",
         alignItems: "center",
         gap: 8,
-        marginTop: 10,
+        marginTop: 20,
       }}
     >
-      <FontAwesome name="arrow-right" color={colors.accent} size={22} />
+      <FontAwesome name={icon} color={colors.accent} size={22} />
       <AppText weight="bold" className="text-accent text-2xl">
-        Swipe right to save
+        {text}
       </AppText>
     </View>
   );
 }
 
-function Explanation() {
-  //TODO: depending on step
+function Explanation({ step }: { step: number }) {
+  function getText(step: number) {
+    switch (step) {
+      case 1:
+        return "Caught you eye?\nSwipe to the right to save it to your list." as const;
+      case 2:
+        return "Not for you?\nSwipe left to move on." as const;
+      case 3:
+        return "Want to know more?\nTap a card to see its details." as const;
+      default:
+        return "Your saved anime will be waiting for you there." as const;
+    }
+  }
+
+  const text = getText(step);
+
   return (
     <AppText
       className="text-xl self-center text-center"
@@ -121,42 +165,56 @@ function Explanation() {
         color: colors.body,
       }}
     >
-      {" Caught you eye?\nSwipe to the right to save it to your list."}
+      {text}
     </AppText>
   );
 }
 
-function Steps() {
-  //TODO : depending on step
+function Steps({ step }: { step: number }) {
   return (
     <View
       style={{
         flexDirection: "row",
         alignItems: "center",
         gap: 10,
-        marginTop: 16,
+        marginTop: 20,
       }}
     >
-      <FontAwesome name="circle" color={colors.accent} size={16} />
       <FontAwesome
         name="circle"
         color={colors.accent}
         size={16}
-        style={{ opacity: 0.3 }}
+        style={{ opacity: step >= 1 ? 1 : 0.3 }}
       />
       <FontAwesome
         name="circle"
         color={colors.accent}
         size={16}
-        style={{ opacity: 0.3 }}
+        style={{ opacity: step >= 2 ? 1 : 0.3 }}
+      />
+      <FontAwesome
+        name="circle"
+        color={colors.accent}
+        size={16}
+        style={{ opacity: step >= 3 ? 1 : 0.3 }}
+      />
+      <FontAwesome
+        name="circle"
+        color={colors.accent}
+        size={16}
+        style={{ opacity: step >= 4 ? 1 : 0.3 }}
       />
     </View>
   );
 }
 
-function NextButton() {
+function NextButton({ onPress }: { onPress: () => void }) {
   return (
-    <View
+    <Pressable
+      onPress={() => {
+        console.log(">>> Next button pressed");
+        onPress();
+      }}
       style={{
         width: "100%",
         alignSelf: "center",
@@ -167,7 +225,7 @@ function NextButton() {
         padding: 18,
         justifyContent: "center",
         alignItems: "center",
-        marginTop: 16,
+        marginTop: 20,
       }}
     >
       <View style={{ flexDirection: "row", alignItems: "center", gap: 10 }}>
@@ -176,21 +234,30 @@ function NextButton() {
         </AppText>
         <FontAwesome name="chevron-right" color={colors.accent} size={14} />
       </View>
-    </View>
+    </Pressable>
   );
 }
 
 export default function Tutorial() {
+  const [step, setStep] = useState(1);
+
+  const router = useRouter();
+
   return (
     <CustomScreen>
       <CenteredContent style={{ gap: 10 }}>
         <SkipText />
         <Title />
         <AnimeTutorialCard />
-        <ExplanationTitle />
-        <Explanation />
-        <Steps />
-        <NextButton />
+        <ExplanationTitle step={step} />
+        <Explanation step={step} />
+        <Steps step={step} />
+        <NextButton
+          onPress={() => {
+            if (step === maxSteps) router.back();
+            setStep(step + 1);
+          }}
+        />
       </CenteredContent>
     </CustomScreen>
   );
