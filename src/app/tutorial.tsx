@@ -6,8 +6,14 @@ import { FontAwesome } from "@react-native-vector-icons/fontawesome";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
+import Animated, {
+  useAnimatedStyle,
+  useSharedValue,
+  withSequence,
+  withTiming,
+} from "react-native-reanimated";
 
 const maxSteps = 4;
 
@@ -46,26 +52,119 @@ function Title() {
   );
 }
 
-function AnimeTutorialCard() {
+function AnimeTutorialCard({ step }: { step: number }) {
+  const duration = 2000;
+  const xPosition = useSharedValue(0);
+  const rotation = useSharedValue(0);
+  const opacity = useSharedValue(0);
+
+  useEffect(() => {
+    if (step === 1) {
+      xPosition.value = withSequence(
+        withTiming(0, { duration: 0 }),
+        withTiming(40, { duration: duration }),
+      );
+      rotation.value = withSequence(
+        withTiming(0, { duration: 0 }),
+        withTiming(4, { duration: duration }),
+      );
+      opacity.value = withSequence(
+        withTiming(0, { duration: 0 }),
+        withTiming(1, { duration: duration }),
+      );
+    } else if (step === 2) {
+      xPosition.value = withSequence(
+        withTiming(0, { duration: 0 }),
+        withTiming(-40, { duration: duration }),
+      );
+      rotation.value = withSequence(
+        withTiming(0, { duration: 0 }),
+        withTiming(-4, { duration: duration }),
+      );
+      opacity.value = withSequence(
+        withTiming(0, { duration: 0 }),
+        withTiming(1, { duration: duration }),
+      );
+    } else if (step === 3) {
+      xPosition.value = 0;
+      rotation.value = 0;
+      opacity.value = 0;
+    }
+  }, [step]);
+
+  const cardAnimatedStyles = useAnimatedStyle(() => ({
+    transform: [
+      { translateX: xPosition.value },
+      { rotate: `${rotation.value}deg` },
+    ],
+  }));
+
+  const iconsAnimatedStyles = useAnimatedStyle(() => ({
+    opacity: opacity.value,
+  }));
+
+  function SwipeIcon() {
+    if (step >= 3) {
+      return null;
+    }
+
+    const left = step === 1 ? null : 20;
+    const right = step === 1 ? 20 : null;
+
+    const name = step === 1 ? "heart-o" : "times";
+    const color = step === 1 ? colors.swipeSave : colors.swipeCancel;
+    const colorBg = step === 1 ? colors.swipeSaveBg : colors.swipeCancelBg;
+
+    return (
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            top: 20,
+            left: left,
+            right: right,
+            width: 72,
+            height: 72,
+            padding: 0,
+            borderRadius: 36,
+            borderWidth: 3,
+            borderColor: color,
+            backgroundColor: colorBg,
+            alignItems: "center",
+            justifyContent: "center",
+          },
+          iconsAnimatedStyles,
+        ]}
+      >
+        <FontAwesome name={name} color={color} size={40} />
+      </Animated.View>
+    );
+  }
+
   return (
-    <View
-      style={{
-        width: "75%",
-        aspectRatio: 2 / 3,
-        alignSelf: "center",
-        position: "relative",
-        borderRadius: 30,
-        borderWidth: 1,
-        borderColor: "rgba(255, 255, 255, 0.14)",
-        overflow: "hidden",
-        marginTop: 16,
-      }}
+    <Animated.View
+      style={[
+        {
+          width: "75%",
+          aspectRatio: 2 / 3,
+          alignSelf: "center",
+          position: "relative",
+          borderRadius: 30,
+          borderWidth: 1,
+          borderColor: "rgba(255, 255, 255, 0.14)",
+          overflow: "hidden",
+          marginTop: 16,
+        },
+        cardAnimatedStyles,
+      ]}
     >
       <Image
         source={TUTORIAL_ANIME.coverImage}
         style={{ width: "100%", height: "100%" }}
         contentFit="cover"
       />
+
+      <SwipeIcon />
 
       <LinearGradient
         colors={["rgba(13, 13, 15, 0)", "rgba(13, 13, 15, 1)"]}
@@ -81,17 +180,17 @@ function AnimeTutorialCard() {
           justifyContent: "flex-end",
         }}
       >
-        <AppText weight="bold" style={{ color: "white" }}>
+        <AppText weight="bold" style={{ color: "white" }} className="text-xl">
           {TUTORIAL_ANIME.title}
         </AppText>
         <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-          <FontAwesome name="star" color={colors.score} size={18} />
-          <AppText weight="bold" className="text-score">
+          <FontAwesome name="star" color={colors.score} size={20} />
+          <AppText weight="bold" className="text-score text-xl">
             {TUTORIAL_ANIME.averageScore}
           </AppText>
         </View>
       </LinearGradient>
-    </View>
+    </Animated.View>
   );
 }
 
@@ -152,7 +251,7 @@ function Explanation({ step }: { step: number }) {
       case 3:
         return "Want to know more?\nTap a card to see its details." as const;
       default:
-        return "Your saved anime will be waiting for you there." as const;
+        return "Your saved animes will be waiting for you there." as const;
     }
   }
 
@@ -261,15 +360,19 @@ export default function Tutorial() {
       <CenteredContent style={{ gap: 10 }}>
         <SkipText />
         <Title />
-        <AnimeTutorialCard />
+        <AnimeTutorialCard step={step} />
         <ExplanationTitle step={step} />
         <Explanation step={step} />
         <Steps step={step} />
         <NextButton
           step={step}
           onPress={() => {
-            if (step === maxSteps) router.back();
-            setStep(step + 1);
+            if (step === maxSteps) {
+              router.back();
+              return;
+            }
+
+            setStep((currentStep) => currentStep + 1);
           }}
         />
       </CenteredContent>

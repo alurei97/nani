@@ -2,5 +2,9 @@
   "app": "#0d0d0f",
   "accent": "#a855f7",
   "score": "#fbbf24",
-  "body": "rgba(255, 255, 255, 0.5)"
+  "body": "rgba(255, 255, 255, 0.5)",
+  "swipeSave": "rgba(74, 222, 128, 1)",
+  "swipeSaveBg": "rgba(74, 222, 128, 0.25)",
+  "swipeCancel": "rgba(239, 68, 68, 1)",
+  "swipeCancelBg": "rgba(239, 68, 68, 0.25)"
 }
