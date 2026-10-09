@@ -1,30 +1,30 @@
 
 import { Anime } from "@/types/anime";
 import { CombinedError } from "urql";
-import {  client } from "./client";
+import { client } from "./client";
 import { AnilistAnime, AnilistFormat, Genre } from "./types";
 
 export type Variables = {
-  page: number;
-  genres?: Genre[];
-  format?: AnilistFormat;
-  score?: number;
+    page: number;
+    genres?: Genre[];
+    format?: AnilistFormat;
+    score?: number;
 };
 
 export type AnimeSearchData = {
-  Page: {
-    media: AnilistAnime[];
-    pageInfo: {
-      lastPage: number;
+    Page: {
+        media: AnilistAnime[];
+        pageInfo: {
+            lastPage: number;
+        };
     };
-  };
 };
 
 function toAnime(anilistAnime: AnilistAnime): Anime {
     return {
         id: anilistAnime.id,
         title: anilistAnime.title.english ?? anilistAnime.title.romaji ?? "Unknown Title",
-        coverImage: anilistAnime.coverImage.large,
+        coverImage: anilistAnime.coverImage.extraLarge,
         averageScore: anilistAnime.averageScore,
     };
 }
@@ -49,7 +49,7 @@ export async function fetchAnimes(variables: Variables): Promise<{ animes: Anime
             ) {
                 id
                 title { romaji english }
-                coverImage { large }
+                coverImage { extraLarge }
                 averageScore
             }
             pageInfo { lastPage }

@@ -70,7 +70,7 @@ query ($page: Int, $genres: [String], $format: MediaFormat, $score: Int) {
         english
       }
       coverImage {
-        large
+        extraLarge
       }
       averageScore # 0–100 (not 0–10 like MyAnimeList)
       episodes
@@ -100,7 +100,7 @@ First call returns `pageInfo.lastPage` — store it, use for subsequent random p
 - Score is 0–100: slider value × 10 → `averageScore_greater`
 - Format: `TV`, `MOVIE`, `OVA`, `ONA` (not `type`)
 - `id` — AniList's own integer ID. Store this, not MAL's mal_id (different system)
-- Image: `coverImage.large` (direct URL, 2:3 portrait, good quality)
+- Image: `coverImage.extraLarge` (direct URL, 2:3 portrait, highest available quality)
 - Trailer: `trailer.id` + `trailer.site` → construct YouTube URL: `youtube.com/watch?v={id}`
 
 **Genres (strings, pass directly as variables):**
@@ -123,21 +123,28 @@ These 19 values are the AniList `GenreCollection` returned on 2026-10-07 and are
 - 4 steps. When a step becomes active, its scripted animation plays once and then holds until Next is pressed:
   - Step 1 — Save: start centered; move the card right and rotate slightly clockwise. Fade in a neon-green heart badge at the card's top-right. Hold the card and badge in place. Text: "Swipe right to save."
   - Step 2 — Skip: reset the card to center, then move it left and rotate slightly counterclockwise. Fade in a neon-red X badge at the card's top-left. Hold in place. Text: "Swipe left to skip."
-  - Step 3 — Anime info: show a brief tap ripple at the center of the card, then flip the card around its Y axis to reveal a hardcoded info face. This is the same flip interaction used by a card in Discover. Text: "Tap to see anime info."
+  - Step 3 — Anime info: show a brief tap ripple at the center of the card, then flip the card around its Y axis to reveal a hardcoded 16:9 banner, title, star-and-score, and short synopsis. This is the same flip interaction used by a card in Discover. Text: "Tap to see anime info."
   - Step 4 — My List: fade and slide in a static 2×2 My List preview. Show the tutorial anime in one tile and three muted empty poster placeholders; no extra anime data or scrolling is needed. Text: "Find it in My List."
 - Skip button top right
 - "Got it" CTA on step 4; Next advances steps 1–3
 - Tutorial card is **hardcoded** — no network request on onboarding:
   ```js
   const TUTORIAL_ANIME = {
-    id: 5114,
-    title: "Fullmetal Alchemist: Brotherhood",
+    id: 154587,
+    title: "Frieren: Beyond Journey's End",
     coverImage:
-      "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx5114-KJTQz9AIm6Wk.jpg",
-    averageScore: 94,
+      "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-qQTzQnEJJ3oB.jpg",
+    bannerImage:
+      "https://s4.anilist.co/file/anilistcdn/media/anime/banner/154587-ivXNJ23SM1xB.jpg",
+    averageScore: 91,
+    format: "TV",
+    episodes: 28,
+    genres: ["Adventure", "Drama", "Fantasy"],
+    synopsis:
+      "Years after defeating the Demon King, elf mage Frieren begins a new journey to understand life, mortality, and the people she once traveled with.",
   };
   ```
-  The info face also uses hardcoded format, episode count, genres, and a short synopsis; do not fetch details during onboarding.
+  The info face shows only the banner, title, score, and synopsis. Keep all tutorial data hardcoded; do not fetch details during onboarding.
   If image fails (no connection) → show purple placeholder colour. Tutorial still works.
 
 ### 2. Filter / Mood screen (tab: Discover)
@@ -177,7 +184,7 @@ decision helper, not management. Reuse the same two-sided card interaction in th
 tutorial; the Discover card may grow during the flip to fit the details.
 
 - Front face: anime poster, title, and score
-- Back face: title, score, episodes, format, genre chips, synopsis (3 lines max), and trailer button
+- Back face: 16:9 banner image, title, inline star-and-score, and synopsis (3 lines max)
 - Tap again or use a close control to return to the poster face
 - Two action buttons: **Skip** (outlined) and **Save** (purple filled) — same as swiping
 
@@ -194,6 +201,14 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 - Status picker: Plan to Watch / Watching / Completed (with semantic colours)
 - Trailer button + Remove from list button
 - No Save/Skip (already saved)
+
+### Card Metadata Styling
+
+Use the same metadata colors on the swipe card and its flipped info face:
+
+- Format pill (TV, Movie, OVA): text `#555555`, background `#111118`, border `#1e1e2e`
+- Genre pills: text `#a855f7`, background `rgba(168, 85, 247, 0.12)`, border `rgba(168, 85, 247, 0.3)`
+- Average score: keep the yellow star-and-number treatment (`#fbbf24`) on both faces; do not render it as a pill
 
 ---
 
@@ -214,12 +229,11 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 
 - [x] AsyncStorage check on app start → show tutorial if not seen
 - [ ] Four-step tutorial screen; each step animation plays on entry and holds until Next
-  - [x] Hardcoded `TUTORIAL_ANIME` poster, title, and score; no network request
-  - [ ] Add hardcoded format, episodes, genres, and short synopsis for the info face
+  - [x] Hardcoded `TUTORIAL_ANIME` poster, banner, title, score, format, episodes, genres, and synopsis; no network request
   - [x] `useSharedValue` values for card X position, rotation, and icon opacity
   - [x] Step 1: reset to center, move right, rotate clockwise, and fade in the green heart badge
   - [x] Step 2: reset to center, move left, rotate counterclockwise, and fade in the red X badge
-  - [ ] Step 3: show a center tap ripple, then flip the card on its Y axis to reveal the anime info face
+  - [x] Step 3: show a center tap ripple, then flip the card on its Y axis to reveal the banner, title, star-and-score, and short synopsis
   - [ ] Step 4: fade/slide in a static 2×2 My List preview with the tutorial anime and three empty poster placeholders
   - [ ] Show purple placeholder if the cover image fails to load
 - [x] Four step indicator dots

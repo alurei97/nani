@@ -29,7 +29,7 @@ export type AnilistAnime = {
         english: string | null;
     };
     coverImage: {
-        large: string;
+        extraLarge: string;
     };
     averageScore: number | null;
 };

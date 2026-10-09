@@ -6,5 +6,13 @@
   "swipeSave": "rgba(74, 222, 128, 1)",
   "swipeSaveBg": "rgba(74, 222, 128, 0.25)",
   "swipeCancel": "rgba(239, 68, 68, 1)",
-  "swipeCancelBg": "rgba(239, 68, 68, 0.25)"
+  "swipeCancelBg": "rgba(239, 68, 68, 0.25)",
+  "cardSurface": "#161622",
+  "cardBorder": "rgba(255, 255, 255, 0.14)",
+  "formatPillText": "#555555",
+  "formatPillBackground": "#111118",
+  "formatPillBorder": "#1e1e2e",
+  "genrePillText": "#a855f7",
+  "genrePillBackground": "rgba(168, 85, 247, 0.12)",
+  "genrePillBorder": "rgba(168, 85, 247, 0.3)"
 }

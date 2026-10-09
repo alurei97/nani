@@ -20,10 +20,18 @@ import Animated, {
 const maxSteps = 4;
 
 const TUTORIAL_ANIME = {
-  title: "Fullmetal Alchemist: Brotherhood",
+  id: 154587,
+  title: "Frieren: Beyond Journey's End",
   coverImage:
-    "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx5114-KJTQz9AIm6Wk.jpg",
-  averageScore: 94,
+    "https://s4.anilist.co/file/anilistcdn/media/anime/cover/large/bx154587-qQTzQnEJJ3oB.jpg",
+  bannerImage:
+    "https://s4.anilist.co/file/anilistcdn/media/anime/banner/154587-ivXNJ23SM1xB.jpg",
+  averageScore: 91,
+  format: "TV",
+  episodes: 28,
+  genres: ["Adventure", "Drama", "Fantasy"],
+  synopsis:
+    "Years after defeating the Demon King, elf mage Frieren begins a new journey to understand life, mortality, and the people she once traveled with.",
 };
 
 function SkipText() {
@@ -236,7 +244,7 @@ function AnimeTutorialCard({ step }: { step: number }) {
             position: "relative",
             borderRadius: 30,
             borderWidth: 1,
-            borderColor: "rgba(255, 255, 255, 0.14)",
+            borderColor: colors.cardBorder,
             overflow: "hidden",
             marginTop: 16,
           },
@@ -289,17 +297,62 @@ function AnimeTutorialCard({ step }: { step: number }) {
           flex: 1,
           width: "100%",
           alignSelf: "center",
-          alignItems: "center",
-          justifyContent: "center",
           position: "relative",
           borderRadius: 30,
           borderWidth: 1,
-          borderColor: "rgba(255, 255, 255, 0.14)",
+          borderColor: colors.cardBorder,
           overflow: "hidden",
           marginTop: 16,
+          backgroundColor: colors.cardSurface,
         }}
       >
-        <AppText style={{ color: "white" }}>Back</AppText>
+        <View style={{ width: "100%", height: "50%", position: "relative" }}>
+          <Image
+            source={TUTORIAL_ANIME.bannerImage}
+            style={{ width: "100%", height: "100%" }}
+            contentFit="cover"
+          />
+          <LinearGradient
+            colors={["rgba(22, 22, 34, 0)", colors.cardSurface]}
+            start={{ x: 0, y: 0 }}
+            end={{ x: 0, y: 1 }}
+            style={{
+              position: "absolute",
+              left: 0,
+              right: 0,
+              bottom: 0,
+              height: 56,
+            }}
+          />
+        </View>
+        <View
+          style={{
+            flex: 1,
+            paddingHorizontal: 16,
+            paddingTop: 4,
+            paddingBottom: 16,
+            gap: 0,
+          }}
+        >
+          <AppText weight="bold" className="text-lg text-white">
+            {TUTORIAL_ANIME.title}
+          </AppText>
+
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <FontAwesome name="star" color={colors.score} size={16} />
+            <AppText weight="bold" className="text-score">
+              {TUTORIAL_ANIME.averageScore}
+            </AppText>
+          </View>
+
+          <AppText
+            className="text-base"
+            style={{ color: colors.body, marginTop: 8 }}
+            numberOfLines={7}
+          >
+            {TUTORIAL_ANIME.synopsis}
+          </AppText>
+        </View>
       </View>
     );
   }
