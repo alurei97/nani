@@ -120,13 +120,13 @@ These 19 values are the AniList `GenreCollection` returned on 2026-10-07 and are
 ### 1. Tutorial (first launch only)
 
 - Shown once, stored via AsyncStorage (`tutorial_seen`)
-- 4 animated steps, each auto-plays then waits:
-  - Step 1: card auto-swipes RIGHT → green heart appears → "Swipe right to save"
-  - Step 2: card auto-swipes LEFT → red X appears → "Swipe left to skip"
-  - Step 3: card is tapped → detail view appears → "Tap to see anime info"
-  - Step 4: static My List preview → "Find it in your list later"
+- 4 steps. When a step becomes active, its scripted animation plays once and then holds until Next is pressed:
+  - Step 1 — Save: start centered; move the card right and rotate slightly clockwise. Fade in a neon-green heart badge at the card's top-right. Hold the card and badge in place. Text: "Swipe right to save."
+  - Step 2 — Skip: reset the card to center, then move it left and rotate slightly counterclockwise. Fade in a neon-red X badge at the card's top-left. Hold in place. Text: "Swipe left to skip."
+  - Step 3 — Anime info: show a brief tap ripple at the center of the card, then flip the card around its Y axis to reveal a hardcoded info face. This is the same flip interaction used by a card in Discover. Text: "Tap to see anime info."
+  - Step 4 — My List: fade and slide in a static 2×2 My List preview. Show the tutorial anime in one tile and three muted empty poster placeholders; no extra anime data or scrolling is needed. Text: "Find it in My List."
 - Skip button top right
-- "Got it" CTA on step 3
+- "Got it" CTA on step 4; Next advances steps 1–3
 - Tutorial card is **hardcoded** — no network request on onboarding:
   ```js
   const TUTORIAL_ANIME = {
@@ -137,6 +137,7 @@ These 19 values are the AniList `GenreCollection` returned on 2026-10-07 and are
     averageScore: 94,
   };
   ```
+  The info face also uses hardcoded format, episode count, genres, and a short synopsis; do not fetch details during onboarding.
   If image fails (no connection) → show purple placeholder colour. Tutorial still works.
 
 ### 2. Filter / Mood screen (tab: Discover)
@@ -168,19 +169,17 @@ These 19 values are the AniList `GenreCollection` returned on 2026-10-07 and are
 - Tap → Detail sheet with status/rating controls
 - Empty state: illustration + "Swipe right on something you like"
 
-### 5a. Anime Detail — Swipe preview (centered popup)
+### 5a. Anime Detail — Swipe preview (flip card)
 
-Triggered by tapping a card in the swipe stack. Still in the discovery flow — overlay
-dims the stack behind it, popup appears centered. Quick decision helper, not management.
+Triggered by tapping a card in the swipe stack. The card itself gives a brief tap
+feedback/ripple, then flips around its Y axis to reveal its info face. This is a quick
+decision helper, not management. Reuse the same two-sided card interaction in the
+tutorial; the Discover card may grow during the flip to fit the details.
 
-- Semi-transparent dark overlay (swipe stack still faintly visible behind)
-- Centered card ~88% screen width, rounded corners
-- Compact image header (shorter than full screen)
-- Title, score, episodes, format, genre chips
-- Synopsis (3 lines max, no expand)
-- Trailer button
+- Front face: anime poster, title, and score
+- Back face: title, score, episodes, format, genre chips, synopsis (3 lines max), and trailer button
+- Tap again or use a close control to return to the poster face
 - Two action buttons: **Skip** (outlined) and **Save** (purple filled) — same as swiping
-- Dismiss: tap outside or X button
 
 ### 5b. Anime Detail — My List (full screen)
 
@@ -214,14 +213,17 @@ back arrow top left. Management mode: user already saved this, now rating/tracki
 ### Phase 2 — Tutorial
 
 - [x] AsyncStorage check on app start → show tutorial if not seen
-- [ ] Tutorial screen: 3 steps with scripted Reanimated card animation
-  - [x] Hardcoded TUTORIAL_ANIME constant (no network request)
-  - [ ] `useSharedValue` for card X position and rotation
-  - [ ] `withTiming` sequence: slide right → pause → snap back → slide left → pause → snap back
-  - [ ] Interpolated opacity for heart/X icons as card moves
-  - [ ] Purple placeholder shown if cover image fails to load
-- [x] Step indicator dots
-- [x] Skip + Got it buttons → set `tutorial_seen` → navigate to Discover
+- [ ] Four-step tutorial screen; each step animation plays on entry and holds until Next
+  - [x] Hardcoded `TUTORIAL_ANIME` poster, title, and score; no network request
+  - [ ] Add hardcoded format, episodes, genres, and short synopsis for the info face
+  - [x] `useSharedValue` values for card X position, rotation, and icon opacity
+  - [x] Step 1: reset to center, move right, rotate clockwise, and fade in the green heart badge
+  - [x] Step 2: reset to center, move left, rotate counterclockwise, and fade in the red X badge
+  - [ ] Step 3: show a center tap ripple, then flip the card on its Y axis to reveal the anime info face
+  - [ ] Step 4: fade/slide in a static 2×2 My List preview with the tutorial anime and three empty poster placeholders
+  - [ ] Show purple placeholder if the cover image fails to load
+- [x] Four step indicator dots
+- [ ] Skip + Got it buttons persist `tutorial_seen` and navigate to Discover
 
 ### Phase 3 — Filter + Swipe
 

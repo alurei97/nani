@@ -8,9 +8,11 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useRouter } from "expo-router";
 import { useEffect, useState } from "react";
 import { Pressable, View } from "react-native";
+import FlipCard from "react-native-flip-card";
 import Animated, {
   useAnimatedStyle,
   useSharedValue,
+  withDelay,
   withSequence,
   withTiming,
 } from "react-native-reanimated";
@@ -44,7 +46,7 @@ function SkipText() {
 function Title() {
   return (
     <AppText
-      className=" text-2xl"
+      className=" text-3xl"
       style={{ color: "rgba(255, 255, 255, 0.8)" }}
     >
       How it works
@@ -53,14 +55,19 @@ function Title() {
 }
 
 function AnimeTutorialCard({ step }: { step: number }) {
-  const duration = 2000;
-  const xPosition = useSharedValue(0);
+  const duration = 1500;
+  const cardX = useSharedValue(0);
   const rotation = useSharedValue(0);
-  const opacity = useSharedValue(0);
+  const iconOpacity = useSharedValue(0);
+  const rippleOpacity = useSharedValue(0);
+  const rippleScale = useSharedValue(0);
+  const [isFlipped, setIsFlipped] = useState(false);
+  const handY = useSharedValue(75);
+  const handOpacity = useSharedValue(0);
 
   useEffect(() => {
     if (step === 1) {
-      xPosition.value = withSequence(
+      cardX.value = withSequence(
         withTiming(0, { duration: 0 }),
         withTiming(40, { duration: duration }),
       );
@@ -68,39 +75,72 @@ function AnimeTutorialCard({ step }: { step: number }) {
         withTiming(0, { duration: 0 }),
         withTiming(4, { duration: duration }),
       );
-      opacity.value = withSequence(
+      iconOpacity.value = withSequence(
         withTiming(0, { duration: 0 }),
-        withTiming(1, { duration: duration }),
+        withTiming(1, { duration }),
       );
     } else if (step === 2) {
-      xPosition.value = withSequence(
+      cardX.value = withSequence(
         withTiming(0, { duration: 0 }),
-        withTiming(-40, { duration: duration }),
+        withTiming(-40, { duration }),
       );
       rotation.value = withSequence(
         withTiming(0, { duration: 0 }),
-        withTiming(-4, { duration: duration }),
+        withTiming(-4, { duration }),
       );
-      opacity.value = withSequence(
+      iconOpacity.value = withSequence(
         withTiming(0, { duration: 0 }),
-        withTiming(1, { duration: duration }),
+        withTiming(1, { duration }),
       );
     } else if (step === 3) {
-      xPosition.value = 0;
+      setIsFlipped(false);
+
+      cardX.value = 0;
       rotation.value = 0;
-      opacity.value = 0;
+      iconOpacity.value = 0;
+
+      rippleOpacity.value = withSequence(
+        withTiming(0, { duration: duration / 2 }),
+        withTiming(1, { duration: 0 }),
+        withTiming(0, { duration: duration / 2 }),
+      );
+      rippleScale.value = 0;
+      rippleScale.value = withDelay(
+        duration / 2,
+        withTiming(7, { duration: duration / 2 }),
+      );
+
+      handY.value = withSequence(withTiming(50, { duration: duration / 2 }));
+      handOpacity.value = withSequence(
+        withTiming(1, { duration: 0 }),
+        withTiming(1, { duration: duration / 2 }),
+        withTiming(0, { duration: 0 }),
+      );
+
+      const timer = setTimeout(() => setIsFlipped(true), duration);
+      return () => clearTimeout(timer);
     }
   }, [step]);
 
   const cardAnimatedStyles = useAnimatedStyle(() => ({
     transform: [
-      { translateX: xPosition.value },
+      { translateX: cardX.value },
       { rotate: `${rotation.value}deg` },
     ],
   }));
 
   const iconsAnimatedStyles = useAnimatedStyle(() => ({
-    opacity: opacity.value,
+    opacity: iconOpacity.value,
+  }));
+
+  const rippleAnimatedStyles = useAnimatedStyle(() => ({
+    opacity: rippleOpacity.value,
+    transform: [{ scale: rippleScale.value }],
+  }));
+
+  const handAnimatedStyles = useAnimatedStyle(() => ({
+    opacity: handOpacity.value,
+    transform: [{ translateY: handY.value }],
   }));
 
   function SwipeIcon() {
@@ -141,56 +181,146 @@ function AnimeTutorialCard({ step }: { step: number }) {
     );
   }
 
-  return (
-    <Animated.View
-      style={[
-        {
-          width: "75%",
-          aspectRatio: 2 / 3,
+  function Ripple() {
+    return (
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            alignItems: "center",
+            justifyContent: "center",
+          },
+          rippleAnimatedStyles,
+        ]}
+      >
+        <FontAwesome name="circle-o" color={colors.accent} size={100} />
+      </Animated.View>
+    );
+  }
+
+  function Hand() {
+    return (
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          {
+            position: "absolute",
+            top: 0,
+            right: 0,
+            bottom: 0,
+            left: 0,
+            alignItems: "center",
+            justifyContent: "center",
+          },
+          handAnimatedStyles,
+        ]}
+      >
+        <FontAwesome name="hand-pointer-o" color={colors.accent} size={100} />
+      </Animated.View>
+    );
+  }
+
+  function FrontCard() {
+    return (
+      <Animated.View
+        style={[
+          {
+            flex: 1,
+            width: "100%",
+            alignSelf: "center",
+            position: "relative",
+            borderRadius: 30,
+            borderWidth: 1,
+            borderColor: "rgba(255, 255, 255, 0.14)",
+            overflow: "hidden",
+            marginTop: 16,
+          },
+          cardAnimatedStyles,
+        ]}
+      >
+        <Image
+          source={TUTORIAL_ANIME.coverImage}
+          style={{ width: "100%", height: "100%" }}
+          contentFit="cover"
+        />
+
+        <SwipeIcon />
+
+        <Hand />
+        <Ripple />
+
+        <LinearGradient
+          colors={["rgba(13, 13, 15, 0)", "rgba(13, 13, 15, 1)"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }}
+          style={{
+            position: "absolute",
+            left: 0,
+            right: 0,
+            bottom: 0,
+            height: 150,
+            padding: 16,
+            justifyContent: "flex-end",
+          }}
+        >
+          <AppText weight="bold" style={{ color: "white" }} className="text-xl">
+            {TUTORIAL_ANIME.title}
+          </AppText>
+          <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
+            <FontAwesome name="star" color={colors.score} size={20} />
+            <AppText weight="bold" className="text-score text-xl">
+              {TUTORIAL_ANIME.averageScore}
+            </AppText>
+          </View>
+        </LinearGradient>
+      </Animated.View>
+    );
+  }
+
+  function BackCard() {
+    return (
+      <View
+        style={{
+          flex: 1,
+          width: "100%",
           alignSelf: "center",
+          alignItems: "center",
+          justifyContent: "center",
           position: "relative",
           borderRadius: 30,
           borderWidth: 1,
           borderColor: "rgba(255, 255, 255, 0.14)",
           overflow: "hidden",
           marginTop: 16,
-        },
-        cardAnimatedStyles,
-      ]}
-    >
-      <Image
-        source={TUTORIAL_ANIME.coverImage}
-        style={{ width: "100%", height: "100%" }}
-        contentFit="cover"
-      />
-
-      <SwipeIcon />
-
-      <LinearGradient
-        colors={["rgba(13, 13, 15, 0)", "rgba(13, 13, 15, 1)"]}
-        start={{ x: 0, y: 0 }}
-        end={{ x: 0, y: 1 }}
-        style={{
-          position: "absolute",
-          left: 0,
-          right: 0,
-          bottom: 0,
-          height: 150,
-          padding: 16,
-          justifyContent: "flex-end",
         }}
       >
-        <AppText weight="bold" style={{ color: "white" }} className="text-xl">
-          {TUTORIAL_ANIME.title}
-        </AppText>
-        <View style={{ flexDirection: "row", alignItems: "center", gap: 6 }}>
-          <FontAwesome name="star" color={colors.score} size={20} />
-          <AppText weight="bold" className="text-score text-xl">
-            {TUTORIAL_ANIME.averageScore}
-          </AppText>
-        </View>
-      </LinearGradient>
-    </Animated.View>
+        <AppText style={{ color: "white" }}>Back</AppText>
+      </View>
+    );
+  }
+
+  return (
+    <FlipCard
+      style={{
+        flex: 0,
+        width: "75%",
+        aspectRatio: 2 / 3,
+        alignSelf: "center",
+      }}
+      flipHorizontal={true}
+      flipVertical={false}
+      friction={10}
+      clickable={false}
+      flip={step === 3 && isFlipped}
+    >
+      <FrontCard />
+      <BackCard />
+    </FlipCard>
   );
 }
 
@@ -251,7 +381,7 @@ function Explanation({ step }: { step: number }) {
       case 3:
         return "Want to know more?\nTap a card to see its details." as const;
       default:
-        return "Your saved animes will be waiting for you there." as const;
+        return "Your saved animes will be\nwaiting for you there." as const;
     }
   }
 
