@@ -18,6 +18,7 @@ import Animated, {
 } from "react-native-reanimated";
 
 const maxSteps = 4;
+const duration = 1500;
 
 const TUTORIAL_ANIME = {
   id: 154587,
@@ -63,7 +64,6 @@ function Title() {
 }
 
 function AnimeTutorialCard({ step }: { step: number }) {
-  const duration = 1500;
   const cardX = useSharedValue(0);
   const rotation = useSharedValue(0);
   const iconOpacity = useSharedValue(0);
@@ -360,10 +360,9 @@ function AnimeTutorialCard({ step }: { step: number }) {
   return (
     <FlipCard
       style={{
-        flex: 0,
-        width: "75%",
-        aspectRatio: 2 / 3,
-        alignSelf: "center",
+        flex: 1,
+        width: "100%",
+        height: "100%",
       }}
       flipHorizontal={true}
       flipVertical={false}
@@ -374,6 +373,83 @@ function AnimeTutorialCard({ step }: { step: number }) {
       <FrontCard />
       <BackCard />
     </FlipCard>
+  );
+}
+
+function ListPreview() {
+  function HardcodedCard() {
+    return (
+      <View
+        style={{
+          width: "50%",
+          aspectRatio: 2 / 3,
+          alignSelf: "center",
+          position: "relative",
+          borderRadius: 16,
+          borderWidth: 1,
+          borderColor: colors.cardBorder,
+          overflow: "hidden",
+          backgroundColor: colors.cardSurface,
+        }}
+      >
+        <Image
+          source={TUTORIAL_ANIME.coverImage}
+          style={{ width: "100%", height: "100%" }}
+          contentFit="cover"
+        />
+      </View>
+    );
+  }
+
+  function GridCard() {
+    return (
+      <View
+        style={{
+          width: "50%",
+          aspectRatio: 2 / 3,
+          alignSelf: "center",
+          position: "relative",
+          borderRadius: 16,
+          borderWidth: 1,
+          borderColor: colors.cardBorder,
+          overflow: "hidden",
+          backgroundColor: colors.cardSurface,
+        }}
+      ></View>
+    );
+  }
+
+  return (
+    <View
+      style={{
+        width: "100%",
+        height: "100%",
+        padding: 16,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+          marginTop: 20,
+        }}
+      >
+        <HardcodedCard />
+        <GridCard />
+      </View>
+      <View
+        style={{
+          flexDirection: "row",
+          alignItems: "center",
+          gap: 10,
+          marginTop: 10,
+        }}
+      >
+        <GridCard />
+        <GridCard />
+      </View>
+    </View>
   );
 }
 
@@ -533,6 +609,73 @@ function NextButton({ step, onPress }: { step: number; onPress: () => void }) {
   );
 }
 
+function AnimatedStage({ step }: { step: number }) {
+  const cardStageOpacity = useSharedValue(1);
+  const cardStageScale = useSharedValue(1);
+  const cardStageX = useSharedValue<`${number}%`>("0%");
+  const cardStageY = useSharedValue<`${number}%`>("0%");
+  const listStageOpacity = useSharedValue(0);
+  const listStageY = useSharedValue(80);
+
+  useEffect(() => {
+    if (step === maxSteps) {
+      cardStageOpacity.value = withTiming(0, { duration: duration });
+      cardStageScale.value = withTiming(0.5, { duration: duration });
+      cardStageX.value = withTiming("-20%", { duration: duration });
+      cardStageY.value = withTiming("-20%", { duration: duration });
+
+      listStageOpacity.value = 1;
+      listStageY.value = withTiming(0, { duration: duration });
+    }
+  });
+
+  const cardStageStyle = useAnimatedStyle(() => ({
+    opacity: cardStageOpacity.value,
+    transform: [
+      { translateX: cardStageX.value },
+      { translateY: cardStageY.value },
+      { scale: cardStageScale.value },
+    ],
+  }));
+
+  const listStageStyle = useAnimatedStyle(() => ({
+    opacity: listStageOpacity.value,
+    transform: [{ translateY: listStageY.value }],
+  }));
+
+  return (
+    <View
+      style={{
+        width: "75%",
+        aspectRatio: 2 / 3,
+        alignSelf: "center",
+        position: "relative",
+        marginTop: 16,
+      }}
+    >
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 },
+          listStageStyle,
+        ]}
+      >
+        <ListPreview />
+      </Animated.View>
+
+      <Animated.View
+        pointerEvents="none"
+        style={[
+          { position: "absolute", top: 0, right: 0, bottom: 0, left: 0 },
+          cardStageStyle,
+        ]}
+      >
+        <AnimeTutorialCard step={step} />
+      </Animated.View>
+    </View>
+  );
+}
+
 export default function Tutorial() {
   const [step, setStep] = useState(1);
 
@@ -543,7 +686,7 @@ export default function Tutorial() {
       <CenteredContent style={{ gap: 10 }}>
         <SkipText />
         <Title />
-        <AnimeTutorialCard step={step} />
+        <AnimatedStage step={step} />
         <ExplanationTitle step={step} />
         <Explanation step={step} />
         <Steps step={step} />

@@ -2,7 +2,7 @@ import { AppText as Text } from "@/components/app-text";
 import CenteredContent from "@/components/centered-content";
 import CustomScreen from "@/components/custom-screen";
 import colors from "@/constants/colors.json";
-import { getTutorialSeen } from "@/lib/local_storage/local-storage";
+import { getTutorialSeen, saveTutorialSeen } from "@/lib/local_storage/local-storage";
 import { db } from "@/lib/server/db/client";
 import migrations from "@/lib/server/db/migrations/migrations";
 import {
@@ -46,7 +46,7 @@ export default function RootLayout() {
   useEffect(() => {
     if ((fontsLoaded || fontError) && success && tutorialSeen === false) {
       router.push("/tutorial");
-      // saveTutorialSeen();
+      saveTutorialSeen();
     }
   }, [fontsLoaded, fontError, success, tutorialSeen, router]);
 

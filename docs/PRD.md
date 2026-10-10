@@ -228,16 +228,16 @@ Use the same metadata colors on the swipe card and its flipped info face:
 ### Phase 2 — Tutorial
 
 - [x] AsyncStorage check on app start → show tutorial if not seen
-- [ ] Four-step tutorial screen; each step animation plays on entry and holds until Next
+- [x] Four-step tutorial screen; each step animation plays on entry and holds until Next
   - [x] Hardcoded `TUTORIAL_ANIME` poster, banner, title, score, format, episodes, genres, and synopsis; no network request
   - [x] `useSharedValue` values for card X position, rotation, and icon opacity
   - [x] Step 1: reset to center, move right, rotate clockwise, and fade in the green heart badge
   - [x] Step 2: reset to center, move left, rotate counterclockwise, and fade in the red X badge
   - [x] Step 3: show a center tap ripple, then flip the card on its Y axis to reveal the banner, title, star-and-score, and short synopsis
-  - [ ] Step 4: fade/slide in a static 2×2 My List preview with the tutorial anime and three empty poster placeholders
+  - [x] Step 4: fade/slide in a static 2×2 My List preview with the tutorial anime and three empty poster placeholders
   - [ ] Show purple placeholder if the cover image fails to load
 - [x] Four step indicator dots
-- [ ] Skip + Got it buttons persist `tutorial_seen` and navigate to Discover
+- [x] Skip + Got it buttons persist `tutorial_seen` and navigate to Discover
 
 ### Phase 3 — Filter + Swipe
 
