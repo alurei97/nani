@@ -13,6 +13,7 @@ import Animated, {
   useAnimatedStyle,
   useSharedValue,
   withDelay,
+  withRepeat,
   withSequence,
   withTiming,
 } from "react-native-reanimated";
@@ -60,6 +61,53 @@ function Title() {
     >
       How it works
     </AppText>
+  );
+}
+
+function PosterShimmer() {
+  const translateX = useSharedValue<`${number}%`>("-100%");
+
+  useEffect(() => {
+    translateX.value = withRepeat(withTiming("400%", { duration: 1100 }), -1);
+  }, [translateX]);
+
+  const shimmerStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: translateX.value }],
+  }));
+
+  return (
+    <View
+      pointerEvents="none"
+      style={{
+        position: "absolute",
+        top: 0,
+        right: 0,
+        bottom: 0,
+        left: 0,
+        overflow: "hidden",
+        backgroundColor: colors.cardSurface,
+      }}
+    >
+      <Animated.View
+        style={[
+          {
+            position: "absolute",
+            top: 0,
+            bottom: 0,
+            left: 0,
+            width: "45%",
+          },
+          shimmerStyle,
+        ]}
+      >
+        <LinearGradient
+          colors={["transparent", "rgba(255,255,255,0.14)", "transparent"]}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 0 }}
+          style={{ flex: 1 }}
+        />
+      </Animated.View>
+    </View>
   );
 }
 
@@ -234,6 +282,10 @@ function AnimeTutorialCard({ step }: { step: number }) {
   }
 
   function FrontCard() {
+    const [coverState, setCoverState] = useState<
+      "loading" | "loaded" | "error"
+    >("loading");
+
     return (
       <Animated.View
         style={[
@@ -251,11 +303,29 @@ function AnimeTutorialCard({ step }: { step: number }) {
           cardAnimatedStyles,
         ]}
       >
-        <Image
-          source={TUTORIAL_ANIME.coverImage}
-          style={{ width: "100%", height: "100%" }}
-          contentFit="cover"
-        />
+        {coverState !== "error" && (
+          <Image
+            source={TUTORIAL_ANIME.coverImage}
+            style={{ width: "100%", height: "100%" }}
+            contentFit="cover"
+            transition={200}
+            onLoad={() => setCoverState("loaded")}
+            onError={() => setCoverState("error")}
+          />
+        )}
+        {coverState === "error" && (
+          <View
+            style={{
+              position: "absolute",
+              top: 0,
+              right: 0,
+              bottom: 0,
+              left: 0,
+              backgroundColor: colors.accent,
+            }}
+          />
+        )}
+        {coverState === "loading" && <PosterShimmer />}
 
         <SwipeIcon />
 

@@ -235,7 +235,7 @@ Use the same metadata colors on the swipe card and its flipped info face:
   - [x] Step 2: reset to center, move left, rotate counterclockwise, and fade in the red X badge
   - [x] Step 3: show a center tap ripple, then flip the card on its Y axis to reveal the banner, title, star-and-score, and short synopsis
   - [x] Step 4: fade/slide in a static 2×2 My List preview with the tutorial anime and three empty poster placeholders
-  - [ ] Show purple placeholder if the cover image fails to load
+  - [x] Show purple placeholder if the cover image fails to load
 - [x] Four step indicator dots
 - [x] Skip + Got it buttons persist `tutorial_seen` and navigate to Discover
 
