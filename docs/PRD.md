@@ -150,6 +150,8 @@ These 19 values are the AniList `GenreCollection` returned on 2026-10-07 and are
 ### 2. Filter / Mood screen (tab: Discover)
 
 - When no swipe session is active, this is the default Discover state
+- App bar title: Discover
+- Show a Reset action in the app bar only when filters differ from their defaults; reset genres, type, and minimum score
 - Genre chips: scrollable row of toggleable pills (tap to select, multi-select)
 - Type selector: All / TV / Movie / OVA (segmented control)
 - Min score: slider 0–10 (default off / 0)
@@ -158,6 +160,7 @@ These 19 values are the AniList `GenreCollection` returned on 2026-10-07 and are
 
 ### 3. Swipe Stack (active session)
 
+- App bar title: Discover, with an Edit filters action that returns to the filter state without clearing selections
 - Single card display — no background cards peeking behind (cleaner, simpler to animate)
 - Card: full-height poster image, gradient overlay at bottom, title + score + format badge
 - Subtle drop shadow gives depth without needing background cards

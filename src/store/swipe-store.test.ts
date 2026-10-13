@@ -11,9 +11,18 @@ const anime = (id: number): Anime => ({
 describe("swipe store", () => {
     beforeEach(() => {
         useSwipeStore.setState({
+            swipeState: "filter",
             isFetching: false,
             currentIndex: 0,
             animePool: [],
+        });
+    });
+
+    describe("setSwipeState", () => {
+        it("sets the swipe state", () => {
+            useSwipeStore.getState().setSwipeState("swipe");
+
+            expect(useSwipeStore.getState().swipeState).toBe("swipe");
         });
     });
 

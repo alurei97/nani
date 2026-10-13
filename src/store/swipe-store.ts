@@ -1,19 +1,26 @@
 import { Anime } from "@/types/anime";
 import { create } from "zustand";
 
+export type SwipeState = "filter" | "swipe";
+
 type SwipeStore = {
+    swipeState: SwipeState;
     isFetching: boolean;
     currentIndex: number;
     animePool: Anime[];
+    setSwipeState: (swipeState: SwipeState) => void;
     nextCard: () => void;
     setAnimePool: (animePool: Anime[]) => void;
     appendAnimeBatch: (animeBatch: Anime[]) => void;
 };
 
 export const useSwipeStore = create<SwipeStore>((set, get) => ({
+    swipeState: "filter",
     isFetching: false,
     currentIndex: 0,
     animePool: [],
+
+    setSwipeState: (swipeState: SwipeState) => set({ swipeState }),
 
     nextCard: () => {
         const currentIndex = get().currentIndex;
