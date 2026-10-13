@@ -279,8 +279,8 @@ Use the same metadata colors on the swipe card and its flipped info face:
 
 **Phase 1:**
 
-- [ ] Zustand store: setFilters, addToPool, advanceCard actions
-- [ ] Drizzle: saveAnime, updateStatus, removeAnime
+- [x] Zustand store: setFilters, addToPool, advanceCard actions
+- [x] Drizzle: saveAnime, updateStatus, removeAnime
 
 **Phase 3:**
 
