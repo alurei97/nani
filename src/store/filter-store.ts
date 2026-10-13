@@ -5,6 +5,7 @@ type FilterStore = {
     selectedGenres: Genre[];
     selectedFormat: FormatSelection;
     selectedMinScore: number;
+    resetAll: () => void;
     setSelectedGenres: (genres: Genre[]) => void;
     toggleGenre: (genre: Genre) => void;
     setSelectedFormat: (format: FormatSelection) => void;
@@ -15,6 +16,8 @@ export const useFilterStore = create<FilterStore>((set, get) => ({
     selectedGenres: [],
     selectedFormat: "ALL",
     selectedMinScore: 0,
+
+    resetAll: () => set({ selectedGenres: [], selectedFormat: "ALL", selectedMinScore: 0 }),
 
     setSelectedGenres: (genres: Genre[]) => set({ selectedGenres: genres }),
     toggleGenre: (genre: Genre) => {

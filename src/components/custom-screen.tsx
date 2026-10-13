@@ -9,7 +9,15 @@ type CustomScreenProps = {
 
 export default function CustomScreen({ children, style }: CustomScreenProps) {
   return (
-    <SafeAreaView className="flex-1 bg-app" style={{ ...style, padding: 20 }}>
+    <SafeAreaView
+      className="flex-1 bg-app"
+      style={{
+        ...style,
+        paddingTop: 0,
+        paddingBottom: 20,
+        paddingHorizontal: 20,
+      }}
+    >
       {children}
     </SafeAreaView>
   );

@@ -9,6 +9,28 @@ describe("filter store", () => {
         });
     });
 
+    describe("resetAll", () => {
+        it("resets all filters", () => {
+            useFilterStore.setState({ selectedGenres: ["Action"] });
+            useFilterStore.getState().setSelectedFormat("TV");
+            useFilterStore.getState().setSelectedMinScore(7);
+
+            expect(useFilterStore.getState()).toMatchObject({
+                selectedGenres: ["Action"],
+                selectedFormat: "TV",
+                selectedMinScore: 7,
+            });
+
+            useFilterStore.getState().resetAll();
+
+            expect(useFilterStore.getState()).toMatchObject({
+                selectedGenres: [],
+                selectedFormat: "ALL",
+                selectedMinScore: 0,
+            });
+        });
+    });
+
     describe("setSelectedGenres", () => {
         it("sets multiple selected genres", () => {
             useFilterStore.getState().setSelectedGenres(["Action", "Adventure"]);
