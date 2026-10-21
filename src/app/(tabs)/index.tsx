@@ -1,6 +1,7 @@
 import { AppText, AppText as Text } from "@/components/app-text";
 import CustomScreen from "@/components/custom-screen";
 import colors from "@/constants/colors.json";
+import { GENRES } from "@/lib/anilist/types";
 import { useFilterStore } from "@/store/filter-store";
 import { useSwipeStore } from "@/store/swipe-store";
 import FontAwesome from "@react-native-vector-icons/fontawesome";
@@ -34,12 +35,51 @@ function FilterScreen() {
     );
   }
 
+  function GenresList() {
+    const selectedGenres = useFilterStore((state) => state.selectedGenres);
+    const toggleGenre = useFilterStore((state) => state.toggleGenre);
+
+    return (
+      <View style={{ flexDirection: "row", flexWrap: "wrap", gap: 6 }}>
+        {GENRES.map((g) => {
+          const selected = selectedGenres.includes(g);
+
+          const textColor = selected ? colors.accent : colors.body;
+          const borderColor = selected ? colors.accent : colors.body;
+          const backgroundColor = selected
+            ? "rgba(168, 85, 247, 0.12)"
+            : "transparent";
+
+          return (
+            <Pressable
+              key={g}
+              onPress={() => toggleGenre(g)}
+              style={{
+                alignSelf: "flex-start",
+                paddingHorizontal: 12,
+                paddingVertical: 8,
+                borderRadius: 999,
+                borderWidth: 1,
+                borderColor: borderColor,
+                backgroundColor: backgroundColor,
+              }}
+            >
+              <Text style={{ color: textColor }}>{g}</Text>
+            </Pressable>
+          );
+        })}
+      </View>
+    );
+  }
+
   return (
     <View style={{ flex: 1 }}>
       <Appbar />
 
       <View style={{ gap: 10 }}>
-        <Text className="text-accent text-5xl">FILTERING SCREEN</Text>
+        <Text className="text-white">GENRE</Text>
+        <GenresList />
+
         <Pressable
           onPress={() => useSwipeStore.setState({ swipeState: "swipe" })}
         >
@@ -98,13 +138,6 @@ export default function Index() {
   return (
     <CustomScreen>
       {swipeState === "filter" ? <FilterScreen /> : <SwipeScreen />}
-
-      {/* <Link
-          href={"./my-list/"}
-          className="font-nunito text-blue-300 text-3xl"
-        >
-          Go to My list
-        </Link> */}
     </CustomScreen>
   );
 }
