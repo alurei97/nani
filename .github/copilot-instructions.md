@@ -1,7 +1,8 @@
-# Copilot Instructions — Nani? / RepLog
+# Copilot Instructions — Nani?
 
 ## Phase tracking
-The PRD (`NANI_APP_PRD.md`) has checkboxes for each task.
+
+The PRD (`docs/PRD.md`) has checkboxes for each task.
 I check them off as I complete them (`[x]`).
 **Always read the PRD at the start of a session to know which phase I'm in
 and what the next unchecked task is.** Never assume — check the file.
@@ -9,16 +10,16 @@ Do not suggest tasks from a future phase unless I explicitly ask.
 
 ---
 
-# Copilot Instructions — RepLog
-
 ## Who I am
+
 I am a senior Flutter developer with 5 years of experience. My stack is Flutter + Dart,
 BLoC/Cubit, Clean Architecture, Freezed, GetIt, go_router, Drift, Riverpod.
-I have also built backends in .NET (REST API, EF Core, SQLite) and have basic Angular experience.
-I am learning React Native for the first time through this project.
+I have also built backends in .NET (REST API, EF Core, SQLite).
+I am learning React Native for the first time through Nani?.
 
 ## The project
-RepLog is a workout tracker app built with React Native + Expo. The full spec is in `PRD.md`.
+
+Nani? is an anime randomizer and tracker built with React Native + Expo. Its full spec is in `docs/PRD.md`.
 I am building it phase by phase as defined in the PRD.
 
 ## How to help me
@@ -38,30 +39,31 @@ Use this comparison pattern whenever introducing something new:
 > "In Flutter you use X. In React Native the equivalent is Y, but it works differently because..."
 
 Key mappings to reference:
-| Flutter | React Native equivalent |
-|---|---|
-| Widget | Component |
-| StatelessWidget / StatefulWidget | Functional component + useState |
-| BLoC / Cubit | Zustand store |
-| Drift (SQLite) | Drizzle ORM + expo-sqlite |
-| go_router | React Navigation |
-| flutter_animate / Hero | React Native Reanimated |
-| pubspec.yaml | package.json |
-| `flutter pub get` | `npm install` / `npx expo install` |
-| `BuildContext` | No direct equivalent — props + hooks |
-| `setState` | `useState` setter |
-| `StreamBuilder` | `useEffect` + state |
-| Hot reload | Expo Go fast refresh |
-| `MaterialApp` / `ThemeData` | No single equivalent — NativeWind + theme context |
-| `Scaffold` | `View` + `SafeAreaView` |
-| `Column` / `Row` | `View` with flexDirection |
-| `ListView.builder` | `FlatList` |
-| `Text` | `Text` (same name, different import) |
-| `GestureDetector` | `TouchableOpacity` / `Pressable` |
-| `Navigator.push` | `navigation.navigate()` |
+
+| Flutter                          | React Native equivalent                           |
+| -------------------------------- | ------------------------------------------------- |
+| Widget                           | Component                                         |
+| StatelessWidget / StatefulWidget | Functional component + useState                   |
+| BLoC / Cubit                     | Zustand store                                     |
+| Drift (SQLite)                   | Drizzle ORM + expo-sqlite                         |
+| go_router                        | React Navigation                                  |
+| flutter_animate / Hero           | React Native Reanimated                           |
+| pubspec.yaml                     | package.json                                      |
+| `flutter pub get`                | `npm install` / `npx expo install`                |
+| `BuildContext`                   | No direct equivalent — props + hooks              |
+| `setState`                       | `useState` setter                                 |
+| `StreamBuilder`                  | `useEffect` + state                               |
+| Hot reload                       | Expo Go fast refresh                              |
+| `MaterialApp` / `ThemeData`      | No single equivalent — NativeWind + theme context |
+| `Scaffold`                       | `View` + `SafeAreaView`                           |
+| `Column` / `Row`                 | `View` with flexDirection                         |
+| `ListView.builder`               | `FlatList`                                        |
+| `Text`                           | `Text` (same name, different import)              |
+| `GestureDetector`                | `TouchableOpacity` / `Pressable`                  |
+| `Navigator.push`                 | `navigation.navigate()`                           |
 
 **Follow the PRD phases.**
-We are building RepLog phase by phase. Always know which phase we are in and
+We are building Nani? phase by phase. Always know which phase we are in and
 don't introduce concepts or screens from future phases unless I ask.
 
 **Keep exercises small.**
@@ -70,6 +72,7 @@ One concept = one exercise. Not "build the whole screen", but "add this one hook
 
 **Call out React Native gotchas proactively.**
 Especially things that catch Flutter devs off guard:
+
 - No `double` type — everything is `number`
 - Styles are objects (JavaScript), not a type-safe `ThemeData`
 - `flexDirection` defaults to `column` (same as Flutter, but easy to forget)
@@ -79,6 +82,7 @@ Especially things that catch Flutter devs off guard:
 - Metro bundler errors look different from Dart compile errors
 
 ## What I don't need
+
 - Unsolicited refactors of working code
 - Warnings about things that are "not production ready" in a learning project
 - Long explanations of things I haven't asked about yet
@@ -95,9 +99,8 @@ Purple placeholder if image fails. Tutorial works fully offline.
 Drop shadow gives depth. Next card fades/scales in after current one flies off.
 Simpler animation, cleaner look.
 
-This is a separate app from RepLog but shares the same repo folder for reference.
-
 **Status colour system (important — do not use purple for statuses):**
+
 - Plan to Watch → gray `#888888` — neutral, not started
 - Watching → amber `#fbbf24` — in progress
 - Completed → green `#4ade80` — done
@@ -113,6 +116,7 @@ This is a separate app from RepLog but shares the same repo folder for reference
 Two different detail UIs depending on context:
 
 **Swipe card tap → centered popup (modal overlay)**
+
 - Dark overlay dims the swipe stack behind
 - Centered card ~88% screen width, rounded corners
 - Compact image, title, score, genres, short synopsis (3 lines)
@@ -122,6 +126,7 @@ Two different detail UIs depending on context:
 - Implementation: React Native Modal component with transparent background
 
 **My List tile tap → full screen (React Navigation push)**
+
 - Back arrow in header
 - Tall hero image (~35% screen height)
 - Full synopsis (collapsible)
@@ -133,6 +138,7 @@ Two different detail UIs depending on context:
 Same data, different component or `mode` prop: `mode: 'preview' | 'saved'`
 
 <!-- graft:start -->
+
 ## Graft — repo context graph
 
 This repo is indexed in `graft/`: small linked markdown nodes that explain each
